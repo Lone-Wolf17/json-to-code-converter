@@ -1,25 +1,41 @@
-import React, { useState } from "react";
-import Editor from "@monaco-editor/react";
+import React, { useEffect, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import Delete from "./icons/Delete";
 import Copy from "./icons/Copy";
-import Loading from "./components/Loading";
 import "./App.css";
 import JsonConverter from "./components/JsonConverter";
+import { LangaugeOption, languageOptions } from "./utils/types";
+import LanguageSelector from "./components/LanguageSelector";
 
 function App() {
-  const [value, setValue] = useState("");
+  const [jsonInput, setValue] = useState("");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedLanguage, setLanguage] = useState(languageOptions[0]);
 
   const copyToClipBoard = () => alert(`Copied ✅`);
+
+  const handleLanguageChange = (newLanguage?: LangaugeOption) => {
+    if (newLanguage) {
+      setLanguage(newLanguage);
+      handleSubmit();
+    }
+  };
+
+  useEffect(() => {
+    handleSubmit();
+  }, [selectedLanguage]);
+
   const handleSubmit = () => {
     /// set loading to true
     setLoading(true);
     const body = JSON.stringify({
-      value,
+      json_input: jsonInput,
+      language: selectedLanguage.value,
     });
+
+    console.log("Language:: ", selectedLanguage.value);
 
     const headers = {
       "Content-Type": "application/json",
@@ -50,7 +66,12 @@ function App() {
         </div>
 
         <div className="header">
-          <h3>Typescript</h3>
+          <LanguageSelector
+            loading={loading}
+            selectedLanguage={selectedLanguage}
+            onLanguageChange={handleLanguageChange}
+            options={languageOptions}
+          />
           <CopyToClipboard text={output} onCopy={copyToClipBoard}>
             <span>
               <Copy />
@@ -61,7 +82,7 @@ function App() {
 
       <JsonConverter
         loading={loading}
-        value={value}
+        value={jsonInput}
         output={output}
         setValue={setValue}
         setOutput={setOutput}

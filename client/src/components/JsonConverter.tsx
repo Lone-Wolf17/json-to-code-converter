@@ -27,7 +27,7 @@ const JsonConverter = ({
           defaultLanguage="json"
           defaultValue="{ }"
           value={value}
-          onChange={(value) => setValue(value ?? "")}
+          onChange={(value) => setValue(value ?? "{}")}
         />
       </div>
 
@@ -42,7 +42,7 @@ const JsonConverter = ({
             options={{ domReadOnly: true, readOnly: true }}
             defaultValue=""
             value={output}
-            onChange={(value) => setOutput(value ?? "")}
+            onChange={(value) => setOutput(value ?? "{}")}
           />
         )}
       </div>
