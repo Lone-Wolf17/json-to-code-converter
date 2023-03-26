@@ -7,6 +7,7 @@ import "./App.css";
 import JsonConverter from "./components/JsonConverter";
 import { LangaugeOption, languageOptions } from "./utils/types";
 import LanguageSelector from "./components/LanguageSelector";
+import { isValidJSONObject } from "./utils/util-functions";
 
 function App() {
   const [jsonInput, setValue] = useState("");
@@ -28,6 +29,11 @@ function App() {
   }, [selectedLanguage]);
 
   const handleSubmit = () => {
+    // check if it is valid json
+    if (!isValidJSONObject(jsonInput)) {
+      console.log("Enter valid Json");
+      return;
+    }
     /// set loading to true
     setLoading(true);
     const body = JSON.stringify({
