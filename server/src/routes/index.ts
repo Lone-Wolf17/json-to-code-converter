@@ -1,5 +1,6 @@
 import { Router } from "express";
-import openai from "../config/openai-config";
+import { validateZodSchema } from "../middlewares/utils.middleware";
+import { convertJsonSchema } from "../schemas/convert-endpoint.schema";
 import openaiService from "../services/openai.service";
 
 const router = Router();
@@ -9,18 +10,22 @@ router.get("/api", (req, res) => {
   res.status(200).json({ message: "Hello World!!" });
 });
 
-router.post("/convert", async (req, res) => {
-  /// Destructure the JSON object
-  const { value } = req.body;
+router.post(
+  "/convert",
+  validateZodSchema(convertJsonSchema),
+  async (req, res) => {
+    /// Destructure the JSON object
+    const { json_input, language} = req.body;
 
-  /// The chatGPT prompt
+    /// The chatGPT prompt
 
-  const response = await openaiService.convertJSONToTypescript(value);
+    const response = await openaiService.convertJSONToTypescript(json_input, language);
 
-  res.json({
-    message: "Successful",
-    response,
-  });
-});
+    res.json({
+      message: "Successful",
+      response,
+    });
+  }
+);
 
 export default router;
